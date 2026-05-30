@@ -1,0 +1,340 @@
+﻿@page
+@model AluminumStockManager.Pages.DashboardModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard — Aluminum Stock Manager</title>
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Courier New', monospace;
+                background: #f0f0f0;
+                min-height: 100vh;
+            }
+            /* Navbar */
+            .navbar {
+                background: #1a1a2e;
+                padding: 1rem 2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .navbar h1 {
+                    color: #e8a900;
+                    font-size: 1.2rem;
+                }
+
+            .navbar-right {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+                .navbar-right span {
+                    color: #fff;
+                    font-size: .8rem;
+                }
+
+            .btn-logout {
+                background: #e8a900;
+                color: #1a1a2e;
+                border: none;
+                padding: .4rem 1rem;
+                font-family: 'Courier New', monospace;
+                font-size: .8rem;
+                cursor: pointer;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+
+                .btn-logout:hover {
+                    background: #fff;
+                }
+
+            /* Main */
+            .container {
+                padding: 2rem;
+                max-width: 1100px;
+                margin: 0 auto;
+            }
+
+            /* Stats */
+            .stats {
+                display: flex;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .stat-card {
+                background: #fff;
+                border: 2px solid #1a1a2e;
+                box-shadow: 4px 4px 0 #e8a900;
+                padding: 1.2rem 1.8rem;
+                flex: 1;
+                min-width: 180px;
+            }
+
+                .stat-card h3 {
+                    font-size: .75rem;
+                    text-transform: uppercase;
+                    color: #7f8c8d;
+                    letter-spacing: .1em;
+                }
+
+                .stat-card p {
+                    font-size: 2rem;
+                    color: #1a1a2e;
+                    margin-top: .3rem;
+                }
+
+            /* Action Buttons */
+            .actions {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                background: #1a1a2e;
+                color: #e8a900;
+                border: 2px solid #1a1a2e;
+                padding: .7rem 1.5rem;
+                font-family: 'Courier New', monospace;
+                font-size: .85rem;
+                text-transform: uppercase;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+                .btn:hover {
+                    background: #e8a900;
+                    color: #1a1a2e;
+                }
+
+            .btn-danger {
+                background: #e74c3c;
+                color: #fff;
+                border-color: #e74c3c;
+            }
+
+                .btn-danger:hover {
+                    background: #c0392b;
+                    border-color: #c0392b;
+                    color: #fff;
+                }
+
+            .btn-edit {
+                background: #27ae60;
+                color: #fff;
+                border-color: #27ae60;
+                font-size: .75rem;
+                padding: .4rem .8rem;
+            }
+
+                .btn-edit:hover {
+                    background: #219a52;
+                }
+
+            /* Table */
+            .table-section {
+                background: #fff;
+                border: 2px solid #1a1a2e;
+            }
+
+            .table-header {
+                background: #1a1a2e;
+                color: #e8a900;
+                padding: .8rem 1.2rem;
+                font-size: .85rem;
+                text-transform: uppercase;
+                letter-spacing: .1em;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th {
+                background: #f5f5f5;
+                padding: .7rem 1rem;
+                text-align: left;
+                font-size: .72rem;
+                text-transform: uppercase;
+                letter-spacing: .08em;
+                color: #7f8c8d;
+                border-bottom: 2px solid #1a1a2e;
+            }
+
+            td {
+                padding: .7rem 1rem;
+                font-size: .82rem;
+                border-bottom: 1px solid #eee;
+                color: #1a1a2e;
+            }
+
+            tr:hover {
+                background: #fffbf0;
+            }
+
+            .badge {
+                padding: .25rem .6rem;
+                font-size: .7rem;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            .badge-available {
+                background: #eafaf1;
+                color: #27ae60;
+                border: 1px solid #27ae60;
+            }
+
+            .badge-low {
+                background: #fef9e7;
+                color: #e8a900;
+                border: 1px solid #e8a900;
+            }
+
+            .badge-out {
+                background: #fdf2f2;
+                color: #e74c3c;
+                border: 1px solid #e74c3c;
+            }
+
+            .empty-msg {
+                text-align: center;
+                padding: 2rem;
+                color: #7f8c8d;
+                font-size: .9rem;
+            }
+
+            /* Alert */
+            .alert-low {
+                background: #fef9e7;
+                border: 2px solid #e8a900;
+                padding: .8rem 1.2rem;
+                margin-bottom: 1.5rem;
+                font-size: .82rem;
+                color: #b7800a;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>⚙ Aluminum Stock Manager</h1>
+        <div class="navbar-right">
+            <span>Welcome, @Model.UserName</span>
+            <form method="post" asp-page-handler="Logout" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-logout">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Items</h3>
+                <p>@Model.TotalItems</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Quantity</h3>
+                <p>@Model.TotalQuantity</p>
+            </div>
+            <div class="stat-card">
+                <h3>Low Stock</h3>
+                <p>@Model.LowStockCount</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Value</h3>
+                <p>Rs. @Model.TotalValue.ToString("N0")</p>
+            </div>
+        </div>
+
+        <!-- Low Stock Alert -->
+        @if (Model.LowStockCount > 0)
+        {
+            <div class="alert-low">
+                ⚠ @Model.LowStockCount item(s) have low stock (quantity ≤ 5). Please restock soon!
+            </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <a href="/Stock/Add" class="btn">+ Add New Stock</a>
+        </div>
+
+        <!-- Stock Table -->
+        <div class="table-section">
+            <div class="table-header">Stock Inventory</div>
+            @if (Model.StockList.Count == 0)
+            {
+                <div class="empty-msg">No stock items found. Add your first item!</div>
+            }
+            else
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Weight (kg)</th>
+                            <th>Quantity</th>
+                            <th>Price/kg</th>
+                            <th>Supplier</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.StockList)
+                        {
+                            <tr>
+                                <td><strong>@item.ItemName</strong></td>
+                                <td>@item.Category</td>
+                                <td>@item.Weight</td>
+                                <td>@item.Quantity</td>
+                                <td>Rs. @item.PricePerKg</td>
+                                <td>@item.Supplier</td>
+                                <td>
+                                    <span class="badge @(item.Quantity == 0 ? "badge-out" : item.Quantity <= 5 ? "badge-low" : "badge-available")">
+                                        @(item.Quantity == 0 ? "Out of Stock" : item.Quantity <= 5 ? "Low Stock" : "Available")
+                                    </span>
+                                </td>
+                                <td style="display:flex; gap:.5rem;">
+                                    <a href="/Stock/Edit?id=@item.Id" class="btn btn-edit">Edit</a>
+                                    <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-danger" style="font-size:.75rem; padding:.4rem .8rem;"
+                                                onclick="return confirm('Delete this item?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+    </div>
+</body>
+</html>

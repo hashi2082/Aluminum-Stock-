@@ -1,0 +1,168 @@
+﻿@page
+@model AluminumStockManager.Pages.LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login — Aluminum Stock Manager</title>
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Courier New', monospace;
+                background: #1a1a2e;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .card {
+                background: #fff;
+                border: 3px solid #e8a900;
+                box-shadow: 8px 8px 0 #e8a900;
+                width: 420px;
+            }
+
+            .card-header {
+                background: #e8a900;
+                padding: 1.2rem 2rem;
+                text-align: center;
+            }
+
+                .card-header h1 {
+                    font-size: 1.5rem;
+                    color: #1a1a2e;
+                }
+
+                .card-header p {
+                    font-size: .75rem;
+                    color: #1a1a2e;
+                    opacity: .7;
+                }
+
+            .card-body {
+                padding: 2rem;
+            }
+
+            .field {
+                margin-bottom: 1.2rem;
+            }
+
+                .field label {
+                    display: block;
+                    font-size: .72rem;
+                    text-transform: uppercase;
+                    letter-spacing: .1em;
+                    color: #7f8c8d;
+                    margin-bottom: .4rem;
+                }
+
+            input[type=email], input[type=password] {
+                width: 100%;
+                padding: .6rem .9rem;
+                border: 2px solid #1a1a2e;
+                font-family: 'Courier New', monospace;
+                font-size: .9rem;
+                outline: none;
+                background: #f9f9f9;
+            }
+
+            input:focus {
+                border-color: #e8a900;
+                background: #fff;
+            }
+
+            .error {
+                color: #e74c3c;
+                font-size: .75rem;
+                margin-top: .3rem;
+                display: block;
+            }
+
+            .btn {
+                width: 100%;
+                background: #1a1a2e;
+                color: #e8a900;
+                border: 2px solid #1a1a2e;
+                font-family: 'Courier New', monospace;
+                font-size: .9rem;
+                text-transform: uppercase;
+                letter-spacing: .1em;
+                padding: .75rem;
+                cursor: pointer;
+                margin-top: .5rem;
+            }
+
+                .btn:hover {
+                    background: #e8a900;
+                    color: #1a1a2e;
+                }
+
+            .register-link {
+                text-align: center;
+                margin-top: 1rem;
+                font-size: .8rem;
+                color: #7f8c8d;
+            }
+
+                .register-link a {
+                    color: #e8a900;
+                    text-decoration: none;
+                    font-weight: bold;
+                }
+
+            .alert-error {
+                background: #fdf2f2;
+                border: 2px solid #e74c3c;
+                color: #e74c3c;
+                padding: .8rem 1rem;
+                margin-bottom: 1rem;
+                font-size: .8rem;
+            }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h1>⚙ Aluminum Stock Manager</h1>
+            <p>Login to your account</p>
+        </div>
+        <div class="card-body">
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert-error">@Model.ErrorMessage</div>
+            }
+
+            <form method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="field">
+                    <label>Email Address *</label>
+                    <input type="email" name="Email" value="@Model.Email" />
+                    <span class="error">@Html.ValidationMessage("Email")</span>
+                </div>
+
+                <div class="field">
+                    <label>Password *</label>
+                    <input type="password" name="Password" />
+                    <span class="error">@Html.ValidationMessage("Password")</span>
+                </div>
+
+                <button type="submit" class="btn">Login →</button>
+            </form>
+
+            <div class="register-link">
+                Don't have an account? <a href="/Register">Register here</a>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
